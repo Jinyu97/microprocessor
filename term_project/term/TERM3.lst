@@ -1,0 +1,787 @@
+MPASM  5.43                         TERM3.ASM   6-21-2018  18:01:52         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001                 PROCESSOR 16F876A
+                      00002                 #INCLUDE <P16F876A.INC>
+                      00001         LIST
+                      00002 
+                      00003 ;==========================================================================
+                      00004 ;  MPASM PIC16F876A processor include
+                      00005 ; 
+                      00006 ;  (c) Copyright 1999-2011 Microchip Technology, All rights reserved
+                      00007 ;==========================================================================
+                      00008 
+                      00522         LIST
+                      00003                 
+                      00004 ; 변수 선언
+  0020                00005                 VARIABLE        W_TEMP          =       20H
+  0021                00006                 VARIABLE        STATUS_TEMP     =       21H
+  0022                00007                 VARIABLE        INT_CNT         =       22H
+  0023                00008                 VARIABLE        D_10SEC         =       23H
+  0024                00009                 VARIABLE        D_1SEC          =       24H
+  0025                00010                 VARIABLE        DISP_CNT        =       25H
+  0026                00011                 VARIABLE        COM_A           =       26H
+  0027                00012                 VARIABLE        COM_B           =       27H
+  0028                00013                 VARIABLE        D_10MIN         =       28H
+  0029                00014                 VARIABLE        D_1MIN          =       29H
+  0030                00015                 VARIABLE        DBUF1           =       30H
+  0031                00016                 VARIABLE        DBUF2           =       31H
+                      00017                 
+                      00018 ; MAIN PROGRAM
+                      00019 
+                      00020         ORG             00H
+0000   2???           00021         GOTO    START_UP
+                      00022         ORG             04H
+                      00023         
+                      00024 ; ISR 시작 번지
+0004   00A0           00025         MOVWF   W_TEMP ; 현재 사용되고 있는 W REG를 저장
+0005   0E03           00026         SWAPF   STATUS,W
+0006   00A1           00027         MOVWF   STATUS_TEMP
+0007   2???           00028         CALL    DISP ; DISPLAY 부 프로그램
+0008   0E21           00029         SWAPF   STATUS_TEMP,W ; 저장된 내용으로 복원
+0009   0083           00030         MOVWF   STATUS
+000A   0EA0           00031         SWAPF   W_TEMP,F
+000B   0E20           00032         SWAPF   W_TEMP,W
+000C   110B           00033         BCF     INTCON,2
+000D   0009           00034         RETFIE
+                      00035         
+                      00036 ; DISPLAY ROUTINE
+000E                  00037 DISP
+Message[305]: Using default destination of 1 (file).
+000E   0AA5           00038         INCF    DISP_CNT
+000F   1CA5           00039         BTFSS   DISP_CNT, 1
+0010   2???           00040         GOTO    DISPM
+                      00041 
+0011                  00042 DISPN
+0011   1C25           00043         BTFSS   DISP_CNT, 0 
+MPASM  5.43                         TERM3.ASM   6-21-2018  18:01:52         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0012   2???           00044         GOTO    DISP3
+0013   2???           00045         GOTO    DISP4
+                      00046 
+                      00047 
+0014                  00048 DISPM
+0014   1C25           00049         BTFSS   DISP_CNT, 0
+0015   2???           00050         GOTO    DISP2
+0016   2???           00051         GOTO    DISP1
+                      00052         
+                      00053 
+                      00054 ; 처음 들어올 때        
+0017                  00055 DISP1
+0017   3000           00056         MOVLW   B'00000000'
+0018   0085           00057         MOVWF   PORTA
+0019   0087           00058         MOVWF   PORTC
+                      00059         
+001A   0823           00060         MOVF    D_10SEC, W
+001B   2???           00061         CALL    CONV2
+001C   0085           00062         MOVWF   PORTA
+001D   0823           00063         MOVF    D_10SEC, W
+001E   2???           00064         CALL    CONV1
+001F   0087           00065         MOVWF   PORTC
+                      00066 
+                      00067         
+0020   1585           00068         BSF             PORTA,3
+0021   1505           00069         BSF     PORTA,2
+0022   1106           00070         BCF     PORTB,2
+0023   1486           00071         BSF             PORTB,1
+                      00072         
+                      00073 
+0024   0008           00074         RETURN
+                      00075         
+                      00076 ; 다음 들어올 때
+0025                  00077 DISP2
+0025   3000           00078         MOVLW   B'00000000'
+0026   0085           00079         MOVWF   PORTA
+0027   0087           00080         MOVWF   PORTC
+                      00081         
+0028   0824           00082         MOVF    D_1SEC, W
+0029   2???           00083         CALL    CONV2
+002A   0085           00084         MOVWF   PORTA
+002B   0824           00085         MOVF    D_1SEC, W
+002C   2???           00086         CALL    CONV1
+002D   0087           00087         MOVWF   PORTC
+                      00088         
+002E   1585           00089         BSF             PORTA,3
+002F   1505           00090         BSF     PORTA,2
+0030   1506           00091         BSF     PORTB,2
+0031   1086           00092         BCF             PORTB,1
+                      00093                 
+Message[305]: Using default destination of 1 (file).
+0032   0AA2           00094         INCF    INT_CNT
+                      00095         
+MPASM  5.43                         TERM3.ASM   6-21-2018  18:01:52         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00096 
+                      00097 
+0033   0008           00098         RETURN  
+                      00099         
+0034                  00100 DISP3
+0034   3000           00101         MOVLW   B'00000000'
+0035   0085           00102         MOVWF   PORTA
+0036   0087           00103         MOVWF   PORTC
+                      00104         
+0037   0829           00105         MOVF    D_1MIN, W
+0038   2???           00106         CALL    CONV2
+0039   0085           00107         MOVWF   PORTA
+003A   0829           00108         MOVF    D_1MIN, W
+003B   2???           00109         CALL    CONV1
+003C   0087           00110         MOVWF   PORTC
+                      00111 
+                      00112         
+003D   1FA2           00113         BTFSS           INT_CNT, 7
+003E   1405           00114         BSF                     PORTA,0 
+                      00115         
+                      00116         
+003F   1585           00117         BSF             PORTA,3
+0040   1105           00118         BCF     PORTA,2
+0041   1506           00119         BSF     PORTB,2
+0042   1486           00120         BSF             PORTB,1 
+                      00121         
+                      00122 
+                      00123         
+0043   0008           00124         RETURN  
+                      00125         
+0044                  00126 DISP4
+0044   3000           00127         MOVLW   B'00000000'
+0045   0085           00128         MOVWF   PORTA
+0046   0087           00129         MOVWF   PORTC
+                      00130         
+0047   0828           00131         MOVF    D_10MIN, W
+0048   2???           00132         CALL    CONV2
+0049   0085           00133         MOVWF   PORTA
+004A   0828           00134         MOVF    D_10MIN, W
+004B   2???           00135         CALL    CONV1
+004C   0087           00136         MOVWF   PORTC
+                      00137 
+                      00138 
+004D   1185           00139         BCF             PORTA,3
+004E   1505           00140         BSF     PORTA,2
+004F   1506           00141         BSF     PORTB,2
+0050   1486           00142         BSF             PORTB,1 
+                      00143         
+Message[305]: Using default destination of 1 (file).
+0051   0AA2           00144         INCF    INT_CNT
+                      00145         
+                      00146 
+                      00147 
+MPASM  5.43                         TERM3.ASM   6-21-2018  18:01:52         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0052   0008           00148         RETURN  
+                      00149 
+                      00150 
+                      00151         
+                      00152         
+                      00153                 
+                      00154 ; MAIN PROGRAM 시작
+0053                  00155 START_UP
+0053   1683           00156         BSF     STATUS,RP0 ; RAM BANK 1 선택
+0054   3000           00157         MOVLW   B'00000000' ; PORT I/O 선택
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0055   0085           00158         MOVWF   TRISA
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0056   0087           00159         MOVWF   TRISC
+0057   30F9           00160         MOVLW   B'11111001'
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0058   0086           00161         MOVWF   TRISB
+0059   3007           00162         MOVLW   B'00000111' ; PORT I/O 선택
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+005A   009F           00163         MOVWF   ADCON1
+                      00164 
+                      00165 ; INTERRUPT 시간 설정 --- 2.048msec 주기
+005B   3002           00166         MOVLW   B'00000010' ; 2.048msec
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+005C   0081           00167         MOVWF   OPTION_REG
+005D   1283           00168         BCF     STATUS,RP0 ; RAM BANK 0 선택
+005E   168B           00169         BSF     INTCON,5 ; TIMER INTERRUPT ENABLE
+005F   178B           00170         BSF     INTCON,7 ; GLOBAL INT. ENABLE
+0060   2???           00171         GOTO    MAIN_ST
+                      00172 
+0061                  00173 MAIN_ST
+0061   01A2           00174         CLRF    INT_CNT
+0062   01A3           00175         CLRF    D_10SEC
+0063   01A4           00176         CLRF    D_1SEC
+0064   01A8           00177         CLRF    D_10MIN
+0065   01A9           00178         CLRF    D_1MIN
+                      00179         
+0066                  00180 M_LOOP
+                      00181 ; interrupt가 들어온 횟수 확인(시간계수)
+0066   30F4           00182         MOVLW   .244
+0067   0222           00183         SUBWF   INT_CNT,W
+0068   1D03           00184         BTFSS   STATUS, Z
+0069   2???           00185         GOTO    XLOOP
+                      00186 ; 1sec 마다 들어오는 부분
+006A                  00187 CK_LOOP
+006A   01A2           00188         CLRF    INT_CNT ; 다음 1초를 기다리기 위한 초기화
+Message[305]: Using default destination of 1 (file).
+006B   0AA4           00189         INCF    D_1SEC ; 1초 단위 변수 증가
+006C   300A           00190         MOVLW   .10
+006D   0224           00191         SUBWF   D_1SEC,W
+006E   1D03           00192         BTFSS   STATUS, Z
+006F   2???           00193         GOTO    XLOOP
+                      00194 ; 10초마다 들어오는 부분
+MPASM  5.43                         TERM3.ASM   6-21-2018  18:01:52         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0070   01A4           00195         CLRF    D_1SEC ; 다음 10초를 기다리기 위한 초기화
+Message[305]: Using default destination of 1 (file).
+0071   0AA3           00196         INCF    D_10SEC ; 10초 단위 변수 증가
+0072   3006           00197         MOVLW   .6
+0073   0223           00198         SUBWF   D_10SEC,W
+0074   1D03           00199         BTFSS   STATUS, Z
+                      00200 ;       CLRF    D_10SEC ; 10초 단위를 초기화
+0075   2???           00201         GOTO    XLOOP
+                      00202 ; 1분마다 들어오는 부분
+0076   01A3           00203         CLRF    D_10SEC
+Message[305]: Using default destination of 1 (file).
+0077   0AA9           00204         INCF    D_1MIN ; 10초 단위 변수 증가
+0078   300A           00205         MOVLW   .10
+0079   0229           00206         SUBWF   D_1MIN,W
+007A   1D03           00207         BTFSS   STATUS, Z
+                      00208 ;       CLRF    D_1MIN ; 10초 단위를 초기화
+007B   2???           00209         GOTO    XLOOP
+                      00210 ; 10분마다 들어오는 부분
+007C   01A9           00211         CLRF    D_1MIN
+Message[305]: Using default destination of 1 (file).
+007D   0AA8           00212         INCF    D_10MIN ; 10초 단위 변수 증가
+007E   3006           00213         MOVLW   .6
+007F   0228           00214         SUBWF   D_10MIN,W
+0080   1903           00215         BTFSC   STATUS, Z
+0081   01A8           00216         CLRF    D_10MIN ; 10초 단위를 초기화
+0082   2???           00217         GOTO    XLOOP
+                      00218 
+                      00219 ; 나머지 시간 동안 사용자 기능을 수행하기 위한 프로그램 영역
+                      00220 
+                      00221 
+0083                  00222 XLOOP
+                      00223 ; KEY 확인하여 KEY에 따른 기능 수행
+                      00224 ; 기능에 따른 부저 울리기 등
+0083   1A86           00225         BTFSC   PORTB, 5
+                      00226         ;GOTO   M_LOOP
+0084   2???           00227         GOTO SWTEST1
+0085   2???           00228         GOTO    SW3_RESET
+                      00229         
+0086                  00230 SWTEST1
+0086   1986           00231         BTFSC PORTB, 3
+0087   2???           00232         GOTO M_LOOP
+0088   2???           00233         GOTO SW1_STOP
+                      00234         
+                      00235         
+0089                  00236 SW3_RESET
+                      00237 
+0089   1205           00238                 BCF     PORTA, 4 ; BUZZER ON
+008A   2???           00239                 GOTO    MAIN_ST
+                      00240 
+008B                  00241 SW1_STOP
+                      00242                 ;CALL   LED
+                      00243 
+                      00244         ;       BCF     PORTB, 7
+MPASM  5.43                         TERM3.ASM   6-21-2018  18:01:52         PAGE  6
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00245         ;       MOVLW   7FH
+                      00246         ;       MOVWF   PORTC
+                      00247                 
+                      00248                 
+008B   1A06           00249                 BTFSC   PORTB, 4
+008C   2???           00250                 GOTO SW1_STOP
+008D   2???           00251                 GOTO    XLOOP
+                      00252         
+008E                  00253 LED
+008E   3000           00254                 MOVLW   B'00000000'
+008F   0087           00255                 MOVWF   PORTC
+0090   1386           00256                 BCF             PORTB, 7
+0091   3080           00257                 MOVLW   80H
+0092   0087           00258                 MOVWF   PORTC
+                      00259         ;       CALL            DELAY
+                      00260         ;       MOVLW   0BFH
+                      00261         ;       MOVWF   PORTC
+                      00262         ;       CALL            DELAY
+                      00263         ;       MOVLW   0DFH
+                      00264         ;       MOVWF   PORTC
+                      00265         ;       CALL            DELAY
+                      00266                 
+                      00267                 
+                      00268 
+                      00269         
+0093                  00270 CONV1;;PORTC 
+0093   390F           00271         ANDLW   0FH ; W의 low nibble 값을 변환하자.
+0094   0782           00272         ADDWF   PCL,F ; PCL+변환 숫자값 --> PCL
+                      00273 ; PC가 변경되므로 이 명령어 다음 수행 위
+                      00274 ; 치가 변경되지요.
+0095   34E7           00275         RETLW   B'11100111' ;'0'하는 값이 W로 들어옴
+0096   3460           00276         RETLW   B'01100000' ; '1'를 표시 하는 값
+0097   34C3           00277         RETLW   B'11000011' ; '2'를 표시 하는 값
+0098   34E2           00278         RETLW   B'11100010' ; '3'를 표시 하는 값
+0099   3464           00279         RETLW   B'01100100' ; '4'를 표시 하는 값
+009A   34A6           00280         RETLW   B'10100110' ; '5'를 표시 하는 값
+009B   3427           00281         RETLW   B'00100111' ; '6'를 표시 하는 값
+009C   34E4           00282         RETLW   B'11100100' ;7'를 표시 하는 값
+009D   34E7           00283         RETLW   B'11100111' ; '8'를 표시 하는 값
+009E   34E4           00284         RETLW   B'11100100' ; '9'를 표시 하는 값
+009F   3402           00285         RETLW   B'00000010' ; '-'를 표시 하는 값
+00A0   3400           00286         RETLW   B'00000000' ; ' '를 표시 하는 값
+00A1   341A           00287         RETLW   B'00011010' ; 'C'를 표시 하는 값
+00A2   3400           00288         RETLW   B'00000000' ; '．'를 표시 하는 값
+00A3   349E           00289         RETLW   B'10011110' ; 'E'를 표시 하는 값
+00A4   348E           00290         RETLW   B'10001110' ; 'F'를 표시 하는 값
+                      00291         
+00A5                  00292 CONV2;;PORTA
+00A5   390F           00293         ANDLW   0FH ; W의 low nibble 값을 변환하자.
+00A6   0782           00294         ADDWF   PCL,F ; PCL+변환 숫자값 --> PCL
+                      00295 ; PC가 변경되므로 이 명령어 다음 수행 위
+                      00296 ; 치가 변경되지요.
+00A7   3410           00297         RETLW   B'00010000' ;'0'를 표시 하는 값이 W로 들어옴
+MPASM  5.43                         TERM3.ASM   6-21-2018  18:01:52         PAGE  7
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+00A8   3410           00298         RETLW   B'00010000' ; '1'를 표시 하는 값
+00A9   3412           00299         RETLW   B'00010010' ; '2'를 표시 하는 값
+00AA   3412           00300         RETLW   B'00010010' ; '3'를 표시 하는 값
+00AB   3412           00301         RETLW   B'00010010' ; '4'를 표시 하는 값
+00AC   3412           00302         RETLW   B'00010010' ; '5'를 표시 하는 값
+00AD   3412           00303         RETLW   B'00010010' ; '6'를 표시 하는 값
+00AE   3410           00304         RETLW   B'00010000' ; '7'를 표시 하는 값
+00AF   3412           00305         RETLW   B'00010010' ; '8'를 표시 하는 값
+00B0   3412           00306         RETLW   B'00010010' ; '9'를 표시 하는 값
+00B1   3412           00307         RETLW   B'00010010' ; '-'를 표시 하는 값
+00B2   3410           00308         RETLW   B'00010000' ; ' '를 표시 하는 값
+00B3   341A           00309         RETLW   B'00011010' ; 'C'를 표시 하는 값
+00B4   3411           00310         RETLW   B'00010001' ; '．'를 표시 하는 값
+00B5   349E           00311         RETLW   B'10011110' ; 'E'를 표시 하는 값
+00B6   349E           00312         RETLW   B'10011110' ; 'F'를 표시 하는 값
+                      00313 
+                      00314 
+                      00315 
+00B7                  00316 DELAY   ; DELAY 서브루틴                                                
+00B7   307D           00317                 MOVLW   .125
+00B8   00B0           00318                 MOVWF   DBUF1
+00B9   30C8           00319 LP1             MOVLW   .200
+00BA   00B1           00320                 MOVWF   DBUF2
+00BB   0000           00321 LP2             NOP
+00BC   0BB1           00322                 DECFSZ   DBUF2,F
+00BD   2???           00323                 GOTO    LP2
+00BE   0BB0           00324                 DECFSZ   DBUF1,F
+00BF   2???           00325                 GOTO    LP1
+00C0   0008           00326                 RETURN          
+                      00327         
+                      00328 
+Warning[205]: Found directive in column 1. (END)
+                      00329 END
+MPASM  5.43                         TERM3.ASM   6-21-2018  18:01:52         PAGE  8
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ACKDT                             00000005
+ACKEN                             00000004
+ACKSTAT                           00000006
+ADCON0                            0000001F
+ADCON1                            0000009F
+ADCS0                             00000006
+ADCS1                             00000007
+ADCS2                             00000006
+ADDEN                             00000003
+ADFM                              00000007
+ADIE                              00000006
+ADIF                              00000006
+ADON                              00000000
+ADRESH                            0000001E
+ADRESL                            0000009E
+BCLIE                             00000003
+BCLIF                             00000003
+BF                                00000000
+BRGH                              00000002
+C                                 00000000
+C1INV                             00000004
+C1OUT                             00000006
+C2INV                             00000005
+C2OUT                             00000007
+CCP1CON                           00000017
+CCP1IE                            00000002
+CCP1IF                            00000002
+CCP1M0                            00000000
+CCP1M1                            00000001
+CCP1M2                            00000002
+CCP1M3                            00000003
+CCP1X                             00000005
+CCP1Y                             00000004
+CCP2CON                           0000001D
+CCP2IE                            00000000
+CCP2IF                            00000000
+CCP2M0                            00000000
+CCP2M1                            00000001
+CCP2M2                            00000002
+CCP2M3                            00000003
+CCP2X                             00000005
+CCP2Y                             00000004
+CCPR1                             00000015
+CCPR1H                            00000016
+CCPR1L                            00000015
+CCPR2                             0000001B
+CCPR2H                            0000001C
+CCPR2L                            0000001B
+CHS0                              00000003
+CHS1                              00000004
+CHS2                              00000005
+CIS                               00000003
+CKE                               00000006
+MPASM  5.43                         TERM3.ASM   6-21-2018  18:01:52         PAGE  9
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+CKP                               00000004
+CK_LOOP                           0000006A
+CM0                               00000000
+CM1                               00000001
+CM2                               00000002
+CMCON                             0000009C
+CMIE                              00000006
+CMIF                              00000006
+COM_A                             00000026
+COM_B                             00000027
+CONV1                             00000093
+CONV2                             000000A5
+CREN                              00000004
+CSRC                              00000007
+CVR0                              00000000
+CVR1                              00000001
+CVR2                              00000002
+CVR3                              00000003
+CVRCON                            0000009D
+CVREN                             00000007
+CVROE                             00000006
+CVRR                              00000005
+D                                 00000005
+DATA_ADDRESS                      00000005
+DBUF1                             00000030
+DBUF2                             00000031
+DC                                00000001
+DELAY                             000000B7
+DISP                              0000000E
+DISP1                             00000017
+DISP2                             00000025
+DISP3                             00000034
+DISP4                             00000044
+DISPM                             00000014
+DISPN                             00000011
+DISP_CNT                          00000025
+D_10MIN                           00000028
+D_10SEC                           00000023
+D_1MIN                            00000029
+D_1SEC                            00000024
+D_A                               00000005
+D_NOT_A                           00000005
+EEADR                             0000010D
+EEADRH                            0000010F
+EECON1                            0000018C
+EECON2                            0000018D
+EEDATA                            0000010C
+EEDATH                            0000010E
+EEIE                              00000004
+EEIF                              00000004
+EEPGD                             00000007
+F                                 00000001
+FERR                              00000002
+MPASM  5.43                         TERM3.ASM   6-21-2018  18:01:52         PAGE 10
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+FSR                               00000004
+GCEN                              00000007
+GIE                               00000007
+GO                                00000002
+GO_DONE                           00000002
+GO_NOT_DONE                       00000002
+I2C_DATA                          00000005
+I2C_READ                          00000002
+I2C_START                         00000003
+I2C_STOP                          00000004
+INDF                              00000000
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTF                              00000001
+INT_CNT                           00000022
+IRP                               00000007
+LED                               0000008E
+LP1                               000000B9
+LP2                               000000BB
+MAIN_ST                           00000061
+M_LOOP                            00000066
+NOT_A                             00000005
+NOT_ADDRESS                       00000005
+NOT_BO                            00000000
+NOT_BOR                           00000000
+NOT_DONE                          00000002
+NOT_PD                            00000003
+NOT_POR                           00000001
+NOT_RBPU                          00000007
+NOT_RC8                           00000006
+NOT_T1SYNC                        00000002
+NOT_TO                            00000004
+NOT_TX8                           00000006
+NOT_W                             00000002
+NOT_WRITE                         00000002
+OERR                              00000001
+OPTION_REG                        00000081
+P                                 00000004
+PCFG0                             00000000
+PCFG1                             00000001
+PCFG2                             00000002
+PCFG3                             00000003
+PCL                               00000002
+PCLATH                            0000000A
+PCON                              0000008E
+PEIE                              00000006
+PEN                               00000002
+PIE1                              0000008C
+PIE2                              0000008D
+PIR1                              0000000C
+PIR2                              0000000D
+PORTA                             00000005
+MPASM  5.43                         TERM3.ASM   6-21-2018  18:01:52         PAGE 11
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+PORTB                             00000006
+PORTC                             00000007
+PR2                               00000092
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+R                                 00000002
+RA0                               00000000
+RA1                               00000001
+RA2                               00000002
+RA3                               00000003
+RA4                               00000004
+RA5                               00000005
+RB0                               00000000
+RB1                               00000001
+RB2                               00000002
+RB3                               00000003
+RB4                               00000004
+RB5                               00000005
+RB6                               00000006
+RB7                               00000007
+RBIE                              00000003
+RBIF                              00000000
+RC0                               00000000
+RC1                               00000001
+RC2                               00000002
+RC3                               00000003
+RC4                               00000004
+RC5                               00000005
+RC6                               00000006
+RC7                               00000007
+RC8_9                             00000006
+RC9                               00000006
+RCD8                              00000000
+RCEN                              00000003
+RCIE                              00000005
+RCIF                              00000005
+RCREG                             0000001A
+RCSTA                             00000018
+RD                                00000000
+READ_WRITE                        00000002
+RP0                               00000005
+RP1                               00000006
+RSEN                              00000001
+RX9                               00000006
+RX9D                              00000000
+R_NOT_W                           00000002
+R_W                               00000002
+S                                 00000003
+SEN                               00000000
+SMP                               00000007
+SPBRG                             00000099
+MPASM  5.43                         TERM3.ASM   6-21-2018  18:01:52         PAGE 12
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+SPEN                              00000007
+SREN                              00000005
+SSPADD                            00000093
+SSPBUF                            00000013
+SSPCON                            00000014
+SSPCON2                           00000091
+SSPEN                             00000005
+SSPIE                             00000003
+SSPIF                             00000003
+SSPM0                             00000000
+SSPM1                             00000001
+SSPM2                             00000002
+SSPM3                             00000003
+SSPOV                             00000006
+SSPSTAT                           00000094
+START_UP                          00000053
+STATUS                            00000003
+STATUS_TEMP                       00000021
+SW1_STOP                          0000008B
+SW3_RESET                         00000089
+SWTEST1                           00000086
+SYNC                              00000004
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+T1CKPS0                           00000004
+T1CKPS1                           00000005
+T1CON                             00000010
+T1INSYNC                          00000002
+T1OSCEN                           00000003
+T1SYNC                            00000002
+T2CKPS0                           00000000
+T2CKPS1                           00000001
+T2CON                             00000012
+TMR0                              00000001
+TMR0IE                            00000005
+TMR0IF                            00000002
+TMR1CS                            00000001
+TMR1H                             0000000F
+TMR1IE                            00000000
+TMR1IF                            00000000
+TMR1L                             0000000E
+TMR1ON                            00000000
+TMR2                              00000011
+TMR2IE                            00000001
+TMR2IF                            00000001
+TMR2ON                            00000002
+TOUTPS0                           00000003
+TOUTPS1                           00000004
+TOUTPS2                           00000005
+TOUTPS3                           00000006
+TRISA                             00000085
+MPASM  5.43                         TERM3.ASM   6-21-2018  18:01:52         PAGE 13
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TRISA0                            00000000
+TRISA1                            00000001
+TRISA2                            00000002
+TRISA3                            00000003
+TRISA4                            00000004
+TRISA5                            00000005
+TRISB                             00000086
+TRISB0                            00000000
+TRISB1                            00000001
+TRISB2                            00000002
+TRISB3                            00000003
+TRISB4                            00000004
+TRISB5                            00000005
+TRISB6                            00000006
+TRISB7                            00000007
+TRISC                             00000087
+TRISC0                            00000000
+TRISC1                            00000001
+TRISC2                            00000002
+TRISC3                            00000003
+TRISC4                            00000004
+TRISC5                            00000005
+TRISC6                            00000006
+TRISC7                            00000007
+TRMT                              00000001
+TX8_9                             00000006
+TX9                               00000006
+TX9D                              00000000
+TXD8                              00000000
+TXEN                              00000005
+TXIE                              00000004
+TXIF                              00000004
+TXREG                             00000019
+TXSTA                             00000098
+UA                                00000001
+W                                 00000000
+WCOL                              00000007
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+W_TEMP                            00000020
+XLOOP                             00000083
+Z                                 00000002
+_BODEN_OFF                        00003FBF
+_BODEN_ON                         00003FFF
+_BOREN_OFF                        00003FBF
+_BOREN_ON                         00003FFF
+_CONFIG                           00002007
+_CPD_OFF                          00003FFF
+_CPD_ON                           00003EFF
+_CP_ALL                           00001FFF
+_CP_OFF                           00003FFF
+_CP_ON                            00001FFF
+MPASM  5.43                         TERM3.ASM   6-21-2018  18:01:52         PAGE 14
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+_DEBUG_OFF                        00003FFF
+_DEBUG_ON                         000037FF
+_DEVID1                           00002006
+_FOSC_EXTRC                       00003FFF
+_FOSC_HS                          00003FFE
+_FOSC_LP                          00003FFC
+_FOSC_XT                          00003FFD
+_HS_OSC                           00003FFE
+_IDLOC0                           00002000
+_IDLOC1                           00002001
+_IDLOC2                           00002002
+_IDLOC3                           00002003
+_LP_OSC                           00003FFC
+_LVP_OFF                          00003F7F
+_LVP_ON                           00003FFF
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FF7
+_RC_OSC                           00003FFF
+_WDTE_OFF                         00003FFB
+_WDTE_ON                          00003FFF
+_WDT_OFF                          00003FFB
+_WDT_ON                           00003FFF
+_WRT_1FOURTH                      00003BFF
+_WRT_256                          00003DFF
+_WRT_HALF                         000039FF
+_WRT_OFF                          00003FFF
+_XT_OSC                           00003FFD
+__16F876A                         00000001
+
+Errors   :     0
+Warnings :     1 reported,     0 suppressed
+Messages :    12 reported,     0 suppressed
+
+

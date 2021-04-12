@@ -1,0 +1,74 @@
+MPLINK 4.41, Linker
+Linker Map File - Created Thu Jun 21 18:01:53 2018
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000002
+                   .cinit    romdata   0x000001    program   0x000004
+                   .org_1       code   0x000004    program   0x00017a
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000002      
+                            0x000004    0x0000c0      
+            192 out of 8454 program addresses used, program memory utilization is 2%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                  CK_LOOP   0x00006a    program     static D:\term\TERM3.asm        
+                    CONV1   0x000093    program     static D:\term\TERM3.asm        
+                    CONV2   0x0000a5    program     static D:\term\TERM3.asm        
+                    DELAY   0x0000b7    program     static D:\term\TERM3.asm        
+                     DISP   0x00000e    program     static D:\term\TERM3.asm        
+                    DISP1   0x000017    program     static D:\term\TERM3.asm        
+                    DISP2   0x000025    program     static D:\term\TERM3.asm        
+                    DISP3   0x000034    program     static D:\term\TERM3.asm        
+                    DISP4   0x000044    program     static D:\term\TERM3.asm        
+                    DISPM   0x000014    program     static D:\term\TERM3.asm        
+                    DISPN   0x000011    program     static D:\term\TERM3.asm        
+                      LED   0x00008e    program     static D:\term\TERM3.asm        
+                      LP1   0x0000b9    program     static D:\term\TERM3.asm        
+                      LP2   0x0000bb    program     static D:\term\TERM3.asm        
+                  MAIN_ST   0x000061    program     static D:\term\TERM3.asm        
+                   M_LOOP   0x000066    program     static D:\term\TERM3.asm        
+                 START_UP   0x000053    program     static D:\term\TERM3.asm        
+                 SW1_STOP   0x00008b    program     static D:\term\TERM3.asm        
+                SW3_RESET   0x000089    program     static D:\term\TERM3.asm        
+                  SWTEST1   0x000086    program     static D:\term\TERM3.asm        
+                    XLOOP   0x000083    program     static D:\term\TERM3.asm        
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                     DISP   0x00000e    program     static D:\term\TERM3.asm        
+                    DISPN   0x000011    program     static D:\term\TERM3.asm        
+                    DISPM   0x000014    program     static D:\term\TERM3.asm        
+                    DISP1   0x000017    program     static D:\term\TERM3.asm        
+                    DISP2   0x000025    program     static D:\term\TERM3.asm        
+                    DISP3   0x000034    program     static D:\term\TERM3.asm        
+                    DISP4   0x000044    program     static D:\term\TERM3.asm        
+                 START_UP   0x000053    program     static D:\term\TERM3.asm        
+                  MAIN_ST   0x000061    program     static D:\term\TERM3.asm        
+                   M_LOOP   0x000066    program     static D:\term\TERM3.asm        
+                  CK_LOOP   0x00006a    program     static D:\term\TERM3.asm        
+                    XLOOP   0x000083    program     static D:\term\TERM3.asm        
+                  SWTEST1   0x000086    program     static D:\term\TERM3.asm        
+                SW3_RESET   0x000089    program     static D:\term\TERM3.asm        
+                 SW1_STOP   0x00008b    program     static D:\term\TERM3.asm        
+                      LED   0x00008e    program     static D:\term\TERM3.asm        
+                    CONV1   0x000093    program     static D:\term\TERM3.asm        
+                    CONV2   0x0000a5    program     static D:\term\TERM3.asm        
+                    DELAY   0x0000b7    program     static D:\term\TERM3.asm        
+                      LP1   0x0000b9    program     static D:\term\TERM3.asm        
+                      LP2   0x0000bb    program     static D:\term\TERM3.asm        
+
+

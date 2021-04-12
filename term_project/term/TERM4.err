@@ -1,0 +1,13 @@
+Message[305] D:\TERM\TERM4.ASM 38 : Using default destination of 1 (file).
+Message[305] D:\TERM\TERM4.ASM 94 : Using default destination of 1 (file).
+Message[305] D:\TERM\TERM4.ASM 144 : Using default destination of 1 (file).
+Message[302] D:\TERM\TERM4.ASM 158 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] D:\TERM\TERM4.ASM 159 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] D:\TERM\TERM4.ASM 161 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] D:\TERM\TERM4.ASM 163 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] D:\TERM\TERM4.ASM 167 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[305] D:\TERM\TERM4.ASM 189 : Using default destination of 1 (file).
+Message[305] D:\TERM\TERM4.ASM 196 : Using default destination of 1 (file).
+Message[305] D:\TERM\TERM4.ASM 204 : Using default destination of 1 (file).
+Message[305] D:\TERM\TERM4.ASM 212 : Using default destination of 1 (file).
+Warning[205] D:\TERM\TERM4.ASM 329 : Found directive in column 1. (END)
