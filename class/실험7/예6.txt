@@ -1,0 +1,19 @@
+; 예6) buffer에 들어있는 내용을 LCD에 출력하는 부 프로그램
+
+LCD_OUT
+	MOVLW	BUFFER		; initialize pointer의 초기값
+	MOVWF	FSR		; 초기값을 initialize pointer에 넣음
+	; String 데이터를 출력하기 위한 시작 코드 출력
+	MOVLW	0A2H
+	MOVWF	COM_B
+	CALL	RS232C
+NEX	MOVF	INDF, W		; buffer의 내용을 W로 옮김
+	MOVWF	COM_B		; W를 통신 출력 변수로 이동
+	CALL	RS232C
+	CALL	DELAYX		; 안정된 동작을 위한 지연시간
+	; 마지막을 확인함
+	MOVF	INDF, W		; buffer의 내용을 W로 옮김
+	BTFSC	STATUS, ZF	; '00' 인가 확인
+	RETURN
+	INCF	FSR, F		; inc pointer
+	GOTO	NEX

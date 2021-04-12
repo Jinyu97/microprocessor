@@ -1,0 +1,93 @@
+		PROCESSOR 16F876A
+
+		#INCLUDE <P16F876A.INC>
+
+
+; ---변수선언---
+
+		VARIABLE	DBUF1	=	20H
+		VARIABLE	DBUF2	=	21H
+		VARIABLE	DISP1	=	22H
+		VARIABLE	DISP2	=	23H
+		VARIABLE	DISP3	=	24H
+		VARIABLE	DISP4	=	25H
+
+
+		ORG	0000
+		BSF	STATUS, RP0
+		MOVLW	B'00000000'
+		MOVWF	TRISA
+		MOVLW	B'00000000'
+		MOVWF	TRISC
+		MOVLW	B'00000111'
+		MOVWF	ADCON1
+		BCF	STATUS, RP0
+
+; MAIN PROGRAM
+
+		MOVLW	B'10011111'	; 1
+		MOVWF	DISP1
+		MOVLW	B'00100101'	; 2
+		MOVWF	DISP2
+		MOVLW	B'00001101'	; 3
+		MOVWF	DISP3
+		MOVLW	B'10011001'	; 4
+		MOVWF	DISP4
+
+				
+
+D_LOOP		
+		MOVF	DISP1,	W
+		MOVWF	PORTC		; 숫자 값 출력
+		MOVLW	B'00000001'
+		MOVWF	PORTA		; 위치 결정 (DG1 선택)
+		CALL	DELAY		; 이 DELAY는 시간이 약 5ms가 되도록
+
+		MOVLW	0
+		MOVWF	PORTA		; 전부 OFF
+
+		MOVF	DISP2, W	 
+		MOVWF	PORTC		; 숫자 값 출력
+		MOVLW	B'00000010'
+		MOVWF	PORTA		; 위치 결정 (DG2 선택)
+		CALL	DELAY		; 이 DELAY는 시간이 약 5ms가 되도록
+
+		MOVLW	0
+		MOVWF	PORTA		; 전부 OFF
+
+		MOVF	DISP3,	W
+		MOVWF	PORTC		; 숫자 값 출력
+		MOVLW	B'00000100'
+		MOVWF	PORTA		; 위치 결정 (DG3 선택)
+		CALL	DELAY		; 이 DELAY는 시간이 약 5ms가 되도록
+
+		MOVLW	0
+		MOVWF	PORTA		; 전부 OFF
+
+		MOVF	DISP4, W	 
+		MOVWF	PORTC		; 숫자 값 출력
+		MOVLW	B'00001000'
+		MOVWF	PORTA		; 위치 결정 (DG4 선택)
+		CALL	DELAY		; 이 DELAY는 시간이 약 5ms가 되도록
+
+		MOVLW	0
+		MOVWF	PORTA		; 전부 OFF
+
+		GOTO	D_LOOP
+		
+
+; SUBROUTINE (5ms delay routine)
+
+DELAY	
+		MOVLW	.7		; 7번을 확인하기 위한 변수
+		MOVWF	DBUF1
+LP1		MOVLW	.200		; 200번을 확인하기 위한 변수
+		MOVWF	DBUF2
+LP2		NOP
+		DECFSZ	DBUF2, F
+		GOTO	LP2
+		DECFSZ	DBUF1, F	; 변수를 감소시켜 가면서 00이 되었나 확인
+		GOTO	LP1		; ZERO가 아니면 여기에 들어옴
+		RETURN
+		
+		END

@@ -1,0 +1,21 @@
+
+RS232C	MOVLW	8
+	MOVWF	COM_C
+	BCF	PORTA, 0	; start bit=0
+	CALL	DELAYB
+; 데이터 출력 LOOP
+R_LP	BTFSS	COM_B, 0
+	GOTO	BITX
+	; 0 bit =1
+	BSF	PORTA, 0
+	GOTO	NEXT1
+BITX	BCF	PORTA, 0
+NEXT1	CALL	DELAYB
+; 다음 데이터 만들기 및 마지막 확인
+	RRF	COM_B, F
+	DECFSZ	COM_C
+	GOTO	R_LP
+; stop bit 출력
+	BSF	PORTA, 0
+	CALL	DELAYB
+	RETURN	

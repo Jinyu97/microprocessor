@@ -1,0 +1,10 @@
+; 예5) 데이터 RAM 20H에서 2FH의 내용을 전부 '00'으로 만드는 프로그램
+
+	MOVLW	20H		; initialize pointer의 초기값
+	MOVWF	FSR		; 초기값을 initialize pointer에 넣음
+NEX	CLRF	INDF		; clear INDF register
+	INCF	FSR, F		; inc pointer
+	BTFSS	FSR, 4		; 30H 번지가 되었는가 확인
+				; 2F 번지까지 수행하고 1 증가되면 30H이 됨
+	GOTO	NEX
+	CON			; 다음 작업 영역

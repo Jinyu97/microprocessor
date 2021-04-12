@@ -1,0 +1,25 @@
+
+;1~10까지 더해서 사용자 영역 20H번지에 저장하기
+
+	ORG	0000H
+
+	MOVLW 	.1
+	MOVWF	20H
+	MOVLW	.10
+	MOVWF	21H	; 10번 반복을 위한 변수 초기화
+	CLRW		; WORKING REGISTER CLEAR
+
+
+L1
+	ADDWF	20H, 0
+	INCF 	20H
+	DECFSZ	21H, 1
+	GOTO	L1
+	MOVWF	20H
+
+L2
+	GOTO	L2
+
+
+	END
+

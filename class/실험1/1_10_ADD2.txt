@@ -1,0 +1,20 @@
+
+;1~10까지 더해서 사용자 영역 20H번지에 저장하기
+
+	ORG	0000H
+
+	MOVLW 	.10
+	MOVWF	20H
+	CLRW
+
+L1
+	ADDWF	20H, 0
+	DECFSZ	20H, 1
+	GOTO	L1
+	MOVWF	20H
+
+L2
+	GOTO	L2
+
+
+	END

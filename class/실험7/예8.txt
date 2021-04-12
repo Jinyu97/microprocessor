@@ -1,0 +1,25 @@
+; 예8) 직렬 통신 받기
+
+RS232R	MOVLW	8
+	MOVWF	COM_C
+RR11	BTFSC	PORTA, 1	; start bit=0 가 들어옴 확인
+	GOTO	RR11
+	CALL	DELAY1		; 1/4800/2 sec delay
+	BTFSC	PORTA, 1	; start bit=0 가 들어옴 확인	
+	GOTO	RR11
+	; 데이터가 들어옴
+T_LP	CALL	DELAY2		; 1/4800 sec delay
+	RRF	RX_DATA, F	; 위치 이동
+	BCF	RX_DATA, 7	; 수신 데이터를 bit 위치에 넣음
+	BTFSC	PORTA, 1	; 데이터를 읽음
+	BSF	RX_DATA, 7	; 수신 데이터를 bit 위치에 넣음
+
+	DECFSZ	COM_C
+	GOTO	T_LP
+	CALL	DELAY2
+	; stop bit 확인
+	BTFSC	PORTA, 1
+	RETURN
+	; data error --> '00' code return
+	CLRF	RX_DATA		; 받는 buffer clear
+	RETURN		

@@ -1,0 +1,30 @@
+
+RS232C	BCF	PORTA, 0	; START BIT = 0
+	CALL	DELAYB		; 1/4800 SEC DELAY
+	BTFSS	COM_B, 0	; 전송 데이터 0 bit 확인
+	GOTO	BIT0_0
+	; 0 bit = 1
+	BSF	PORTA, 0
+	CALL	DELAYB
+	GOTO	BIT1
+BIT0_0	BCF	PORTA, 0
+	CALL	DELAYB
+
+; 1 bit 확인
+BIT1	.
+	.
+	.
+
+; 7 bit 확인
+BIT7	BTFSS	COM_B, 7	; 전송 데이터 7 bit 확인
+	GOTO	BIT7_0
+	; 7 bit = 1
+	BSF	PORTA, 0
+	CALL	DELAYB
+	GOTO	BIT8
+BIT7_0	BCF	PORTA, 0
+	CALL	DELAYB
+; stop bit 출력
+BIT8	BSF	PORTA, 0
+	CALL	DELAYB
+	RETURN			; 부 프로그램이므로
